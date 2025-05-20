@@ -35,8 +35,8 @@ static lv_obj_t * screens[MAX_SCREENS];
 static int delays_ms[MAX_SCREENS] = {0, 0, 0, 0, 0, 1000, 3000, 3000, 10000, 10000};
 
 static screen_t current_screen = -1;
-static int current_screen_time_ms;
-static int current_screen_delay_ms;
+static int current_screen_time_ms = 0;
+static int current_screen_delay_ms = 0;
 
 static GlobalState * GLOBAL_STATE;
 
@@ -58,11 +58,12 @@ static lv_obj_t *self_test_message_label;
 static lv_obj_t *self_test_result_label;
 static lv_obj_t *self_test_finished_label;
 
-static double current_hashrate;
-static float current_power;
-static uint64_t current_difficulty;
-static float current_chip_temp;
-static bool found_block;
+static double current_hashrate = 0;
+static float current_power = 0;
+static uint64_t current_difficulty = 0;
+static float current_chip_temp = 0;
+static bool found_block = false;
+static bool self_test_finished = false;
 
 static lv_obj_t * create_scr_self_test() {
     lv_obj_t * scr = lv_obj_create(NULL);
@@ -304,7 +305,9 @@ static void screen_update_cb(lv_timer_t * timer)
 
         lv_label_set_text(self_test_message_label, self_test->message);
 
-        if (self_test->finished) {
+        if (self_test->finished && !self_test_finished) {
+            self_test_finished = true;
+
             if (self_test->result) {
                 lv_label_set_text(self_test_result_label, "TESTS PASS!");
                 lv_label_set_text(self_test_finished_label, "Press RESET button to start Bitaxe.");
