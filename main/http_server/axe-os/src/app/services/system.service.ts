@@ -72,10 +72,10 @@ export class SystemService {
         statsLimit: 360,
         statsDuration: 2,
         fanrpm: 0,
-
         boardtemp1: 30,
         boardtemp2: 40,
-        overheat_mode: 0
+        overheat_mode: 0,
+        miningEnabled: true
       }
     ).pipe(delay(1000));
   }
@@ -101,6 +101,14 @@ export class SystemService {
         [491.327834852684,63,15.33935546875,58125]
       ]
     }).pipe(delay(1000));
+  }
+
+  public startMining(uri: string = ''): Observable<any> {
+    return this.httpClient.patch(`${uri}/api/mining/start`, {});
+  }
+
+  public stopMining(uri: string = ''): Observable<any> {
+    return this.httpClient.patch(`${uri}/api/mining/stop`, {});
   }
 
   public restart(uri: string = '') {
