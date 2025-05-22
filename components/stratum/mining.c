@@ -4,6 +4,7 @@
 #include "mining.h"
 #include "utils.h"
 #include "mbedtls/sha256.h"
+#include <stdlib.h>
 
 void free_bm_job(bm_job *job)
 {
@@ -57,9 +58,12 @@ bm_job construct_bm_job(mining_notify *params, const char *merkle_root, const ui
     bm_job new_job;
 
     new_job.version = params->version;
-    new_job.starting_nonce = 0;
+    
     new_job.target = params->target;
     new_job.ntime = params->ntime;
+    srand((unsigned)new_job.ntime);
+    uint32_t nonceR = ((uint32_t)rand() << 16) | (uint32_t)rand();
+    new_job.starting_nonce = nonceR;
     new_job.pool_diff = params->difficulty;
 
     hex2bin(merkle_root, new_job.merkle_root, 32);
